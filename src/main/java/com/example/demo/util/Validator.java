@@ -12,16 +12,16 @@ import com.example.demo.model.Person;
 @Component
 public class Validator {
 	
-	public boolean idNull(UUID id) {
+	public boolean id(UUID id) {
 		return !ObjectUtils.isEmpty(id);
 	}
 	
-	public boolean nameNull(String name) {
+	public boolean name(String name) {
 		return !ObjectUtils.isEmpty(name);		
 	}
 	
 	
-	public boolean personNull(Person person) {		
+	public boolean person(Person person) {		
 		return ObjectUtils.isEmpty(person);
 		
 	}

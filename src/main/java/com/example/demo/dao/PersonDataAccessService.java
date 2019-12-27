@@ -23,15 +23,15 @@ public class PersonDataAccessService implements PersonDao{
 	}
 
 	@Override
-	public int deletePersonById(Person person) {
+	public boolean deletePersonById(Person person) {
 		// TODO Auto-generated method stub
-		return 0;
+		return false;
 	}
 
 	@Override
-	public int updatePersonById(Person person) {
+	public boolean updatePersonById(Person person) {
 		// TODO Auto-generated method stub
-		return 0;
+		return false;
 	}
 
 	@Override

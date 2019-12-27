@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.PersonDao;
+import com.example.demo.model.MessageResponse;
 import com.example.demo.model.Person;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.util.Validator;
@@ -19,199 +20,96 @@ import com.example.demo.util.Validator;
 @Service
 public class PersonService {
 	
+
 	
 	private final PersonDao personDao;
 	private final Validator validator;
+	private final MessageResponse messageResponse;
+	private final PersonResponse personResponse;
+	
+	private final List<Person> people = new ArrayList<Person>();
 	
 	@Autowired						
-	public PersonService(@Qualifier("fakeDao") PersonDao personDao, Validator validator) {
+	public PersonService(@Qualifier("fakeDao") PersonDao personDao, Validator validator, MessageResponse messageResponse, PersonResponse personResponse) {
 		this.personDao = personDao;
 		this.validator = validator;
+		this.messageResponse = messageResponse;
+		this.personResponse = personResponse;
 	}
 
 	
 	
 	public PersonResponse addPerson(Person person) {
-			
-		PersonResponse personRes = new PersonResponse();	
-		List<Person> people = new ArrayList<Person>();
-		
-		if(validator.nameNull(person.getName())) {		
-			
+		people.clear();
+		people.add(person);
+		if(validator.name(person.getName())) {
+			personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mSuccess(), people);
 			personDao.insertPerson(person);
-			people.add(person);
-			
-			personRes.setCode("200");			
-			personRes.setMessage("Person added");			
-			personRes.setPersonResult(people);
-			
-			return personRes;
 		}
-		
 		else {
-			people.add(person);
-			
-			personRes.setCode("400");
-			personRes.setMessage("Person not added. Name empty ");
-			personRes.setPersonResult(people);
-			
-			return personRes;
-			
+			personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mEmptyName(), people);
 		}
-		
-		
-
-
+		return personResponse;
 	}
 	
 	public PersonResponse getAllPeople(){
-		
-		PersonResponse personRes = new PersonResponse();
-		
-		personRes.setCode("200");			
-		personRes.setMessage("People List");			
-		personRes.setPersonResult(personDao.selectAllPeople());		
-	
-		return personRes;
+		personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mGetList(), personDao.selectAllPeople());
+		return personResponse;
 	}
 	
-	
 	public PersonResponse getPersonById(Person person){
-		
-		
-		PersonResponse personRes = new PersonResponse();		
-		List<Person> people = new ArrayList<Person>();		
-		
-		if(validator.idNull(person.getId())) {	
-			
-			people.add(personDao.selectPersonById(person).orElse(null));
-				
-			
-			
-			personRes.setCode("200");
-			personRes.setMessage("Id Correct");
-			personRes.setPersonResult(people);
-				
+		people.clear();
+		if(validator.id(person.getId())) {	
+			if(!personDao.selectPersonById(person).isEmpty()) {
+				people.add(personDao.selectPersonById(person).orElse(null));
+				personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mGetList(), people);
+			}
+			else {
+				personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mNotExist(), people);				
+			}
 		}
-		
 		else {
-			personRes.setCode("400");
-			personRes.setMessage("Id is empty");
+			personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mEmptyId(), people);
 		}
-		
-		
-		
-		
-		return personRes;		
+		return personResponse;		
 	}
 	
 	public PersonResponse deletePerson(Person person) {
-		
-		
-		
-		PersonResponse personRes = new PersonResponse();	
-		List<Person> people = new ArrayList<Person>();
-		
-		if(validator.idNull(person.getId())) {		
-			
-			
-			
-			
-			if(personDao.deletePersonById(person)==1) {
-				
-				
-				people.add(person);				
-				personRes.setCode("200");			
-				personRes.setMessage("Person deleted");			
-				personRes.setPersonResult(people);
+		people.clear();
+		people.add(person);
+		if(validator.id(person.getId())) {		
+			if(personDao.deletePersonById(person)) {
+				personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mSuccess(), people);
 			}
-			
-			
 			else {
-				
-				people.add(person);				
-				personRes.setCode("200");			
-				personRes.setMessage("Person NOT deleted. Person does not exist");			
-				personRes.setPersonResult(people);
-				
+				personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mNotExist(), people);
 			}
-
-
-			
-		
 		}
-		
 		else {
-			people.add(person);
-			
-			personRes.setCode("400");
-			personRes.setMessage("Id empty");
-			personRes.setPersonResult(people);
+			personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mEmptyId(), people);
 		}
-		
-		
-		
-		
-		return personRes;
+		return personResponse;
 	}
 
 	public PersonResponse updatePerson(Person newperson) {
-		
-		PersonResponse personRes = new PersonResponse();	
-		List<Person> people = new ArrayList<Person>();
-		
-		if(validator.idNull(newperson.getId())) {		
-			
-			if(validator.nameNull(newperson.getName())) {
-			
-			
-			
-			if(personDao.updatePersonById(newperson)==1) {
-				
-				
-				people.add(newperson);				
-				personRes.setCode("200");			
-				personRes.setMessage("Person updated");			
-				personRes.setPersonResult(people);
+		people.clear();
+		people.add(newperson);
+		if(validator.id(newperson.getId())) {		
+			if(validator.name(newperson.getName())) {
+				if(personDao.updatePersonById(newperson)) {
+					personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mSuccess(), people);
+				}
+				else {
+					personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mNotExist(), people);
+				}
 			}
-			
-			
 			else {
-				
-				people.add(newperson);				
-				personRes.setCode("200");			
-				personRes.setMessage("Person NOT updated. Person does not exist");			
-				personRes.setPersonResult(people);
-				
-			}
-			
-		
-
-			
-			}
-			
-			
-			
-			else {
-				people.add(newperson);				
-				personRes.setCode("400");
-				personRes.setMessage("Name empty");
-				personRes.setPersonResult(people);
-				
+				personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mEmptyName(), people);
 			}
 		}
-		
 		else {
-			people.add(newperson);
-			
-			personRes.setCode("400");
-			personRes.setMessage("Id empty");
-			personRes.setPersonResult(people);
+			personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mEmptyId(), people);
 		}
-		
-		
-		
-		return personRes;
-		
+		return personResponse;
 	}
 }

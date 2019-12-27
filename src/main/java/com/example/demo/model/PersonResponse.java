@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
+
+@Component
 public class PersonResponse {
 	
 	
 	private String code;
 	private String message;	
 	private List<Person> personResult;
-	
 	
 	public String getCode() {
 		return code;
@@ -35,10 +38,14 @@ public class PersonResponse {
 	public void setPersonResult(List<Person> people) {
 		this.personResult = people;
 	}
+	
+	public void setPersonResponse(String code, String message, List<Person> personResult) {
+		this.code = code;
+		this.message = message;
+		this.personResult = personResult;
+	}
 
 
-	
-	
 	
 	
 
