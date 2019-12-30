@@ -4,15 +4,10 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Edureka Courses</title>
+<title>Successful Page</title>
 </head>
 <body>
-Top Selling Courses are:
-1. DevOps
-2. Python
-3. Big Data
-4. AWS
-5. RPA
+<h1>Successful ${page}</h1>
 
 </body>
 </html>

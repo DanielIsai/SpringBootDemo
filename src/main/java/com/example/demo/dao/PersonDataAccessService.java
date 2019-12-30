@@ -40,4 +40,10 @@ public class PersonDataAccessService implements PersonDao{
 		return null;
 	}
 
+	@Override
+	public Optional<Person> selectPersonByName(Person personSend) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

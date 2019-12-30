@@ -19,9 +19,7 @@ import com.example.demo.util.Validator;
 
 @Service
 public class PersonService {
-	
 
-	
 	private final PersonDao personDao;
 	private final Validator validator;
 	private final MessageResponse messageResponse;
@@ -73,6 +71,25 @@ public class PersonService {
 		}
 		return personResponse;		
 	}
+	
+	public PersonResponse getPersonByName(Person person){
+		people.clear();
+		if(validator.name(person.getName())) {	
+			if(!personDao.selectPersonByName(person).isEmpty()) {
+				people.add(personDao.selectPersonByName(person).orElse(null));
+				personResponse.setPersonResponse(messageResponse.codeSuccess(), messageResponse.mGetList(), people);
+			}
+			else {
+				personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mNotExist(), people);				
+			}
+		}
+		else {
+			personResponse.setPersonResponse(messageResponse.codeError(), messageResponse.mEmptyName(), people);
+		}
+		return personResponse;		
+	}
+	
+	
 	
 	public PersonResponse deletePerson(Person person) {
 		people.clear();

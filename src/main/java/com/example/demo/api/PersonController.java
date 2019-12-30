@@ -32,14 +32,10 @@ public class PersonController {
 
 
 	private final PersonService personService;
-	private final Validator validator;
 
-	public PersonController(PersonService personService, Validator validator) {
+	public PersonController(PersonService personService) {
 		this.personService = personService;
-		this.validator = validator;
-		
 	}
-	
 	
 	@PostMapping("create")
 	public PersonResponse addPerson(@RequestBody Person person) {
@@ -51,25 +47,19 @@ public class PersonController {
 		return personService.getAllPeople();
 	}
 	
-	
 	@GetMapping("obtainById")	
 	public PersonResponse getPersonById(@RequestBody Person person) {
 		 return personService.getPersonById(person);
 	}
-	
 
 	@DeleteMapping("deleteById")
 	public PersonResponse deletePersonById(@RequestBody Person person) {		
 		return personService.deletePerson(person);
 	}
 	
-	
-	
 	@PutMapping("updateById")
 	public PersonResponse updatePerson(@RequestBody Person personToUpdate) {
 		return personService.updatePerson(personToUpdate);
 	}
-
-
 
 }

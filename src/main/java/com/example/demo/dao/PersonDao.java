@@ -20,6 +20,8 @@ public interface PersonDao {
 	
 	Optional<Person> selectPersonById(Person personSend);
 	
+	Optional<Person> selectPersonByName(Person personSend);
+	
 	boolean deletePersonById(Person person);
 	
 	boolean updatePersonById(Person person);

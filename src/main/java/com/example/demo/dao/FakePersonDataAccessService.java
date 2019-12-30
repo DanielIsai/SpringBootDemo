@@ -32,6 +32,16 @@ public class FakePersonDataAccessService implements PersonDao{
 				.filter(person -> person.getId().equals(id))
 				.findFirst();
 	}
+	
+	
+	@Override
+	public Optional<Person> selectPersonByName(Person personSend) {
+		String name = personSend.getName();
+		return DB.stream()
+				.filter(person -> person.getName().equals(name))
+				.findFirst();
+	}
+
 
 	@Override
 	public boolean deletePersonById(Person person) {
@@ -57,5 +67,6 @@ public class FakePersonDataAccessService implements PersonDao{
 				})
 				.orElse(false);		
 	}
+
 
 }
